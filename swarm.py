@@ -1,44 +1,41 @@
 import pygame, os, math, time, random
+import pygame.locals
+
 pygame.init()
 
 # set the width and height of the screen
-WIDTH = 1000
-HEIGHT = 1000
+width = 1000
+height = 1000
 
-CENTREX = WIDTH / 2
-CENTREY = HEIGHT / 2
+center_x = width / 2
+center_y = height / 2
 
-NUMBEROFBIRDS = 200
+no_of_birds = 200
 
+position_spread = 10000
+speed_spread = 5
+max_speed = 10
 
-POSITIONSPREAD = 10000
-SPEEDSPREAD = 5
-MAXSPEED = 10
+border = 100
+leader_border = 200
+border_speed_change = 0.2
 
-BORDER = 100
-LEADERBORDER = 200
-BORDERSPEEDCHANGE = 0.2
+min_dist = 10.0
+match_speed_window = 40.0
 
-MINDIST = 10.0
-MATCHSPEEDWINDOW = 40.0
-
-LEADERBIRDRANDOMSPEEDCHANGE = 0.2
-LEADERMAXSPEED = 5.0
+leader_random_speed_change = 0.2
+leader_max_speed = 5.0
 
 barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
-BARRIERRADIUS = 30
+barrier_radius = 30
 
-
-size = [WIDTH, HEIGHT]
+size = [width, height]
 screen = pygame.display.set_mode(size)
 
 # This makes the normal mouse pointer invisible in graphics window
 pygame.mouse.set_visible(0)
 
-
-
 birdlist = []
-
 
 # Generate leader bird
 leaderbirdx = 300.0
@@ -46,14 +43,13 @@ leaderbirdy = 300.0
 leaderbirdvx = 5.0
 leaderbirdvy = 0.0
 
-
 # Generate birds
 i = 0
-while (i < NUMBEROFBIRDS):
-    x = random.uniform(CENTREX - POSITIONSPREAD, CENTREX + POSITIONSPREAD)
-    y = random.uniform(CENTREY - POSITIONSPREAD, CENTREY + POSITIONSPREAD)
-    vx = random.uniform(-SPEEDSPREAD, SPEEDSPREAD)
-    vy = random.uniform(-SPEEDSPREAD, SPEEDSPREAD)
+while (i < no_of_birds):
+    x = random.uniform(center_x - position_spread, center_x + position_spread)
+    y = random.uniform(center_y - position_spread, center_y + position_spread)
+    vx = random.uniform(-speed_spread, speed_spread)
+    vy = random.uniform(-speed_spread, speed_spread)
     
     newbird = [x, y, vx, vy]
 
@@ -68,38 +64,35 @@ while not quit_pressed:
 
 
     # Update leader bird position and speed
-    if (leaderbirdx < LEADERBORDER):
-        leaderbirdvx += BORDERSPEEDCHANGE
-    if (leaderbirdy < LEADERBORDER):
-        leaderbirdvy += BORDERSPEEDCHANGE
-    if (leaderbirdx > WIDTH - LEADERBORDER):
-        leaderbirdvx -= BORDERSPEEDCHANGE
-    if (leaderbirdy > HEIGHT - LEADERBORDER):
-        leaderbirdvy -= BORDERSPEEDCHANGE
+    if (leaderbirdx < leader_border):
+        leaderbirdvx += border_speed_change
+    if (leaderbirdy < leader_border):
+        leaderbirdvy += border_speed_change
+    if (leaderbirdx > width - leader_border):
+        leaderbirdvx -= border_speed_change
+    if (leaderbirdy > height - leader_border):
+        leaderbirdvy -= border_speed_change
 
 
     # Draw leaderbird and update
-    #pygame.draw.circle(screen, (255,0,255), (int(leaderbirdx), int(leaderbirdy)), 5, 0)
-    leaderbirdvx += random.uniform(-LEADERBIRDRANDOMSPEEDCHANGE, LEADERBIRDRANDOMSPEEDCHANGE)
-    leaderbirdvy += random.uniform(-LEADERBIRDRANDOMSPEEDCHANGE, LEADERBIRDRANDOMSPEEDCHANGE)
+    # pygame.draw.circle(screen, (255,0,255), (int(leaderbirdx), int(leaderbirdy)), 5, 0)
+    leaderbirdvx += random.uniform(-leader_random_speed_change, leader_random_speed_change)
+    leaderbirdvy += random.uniform(-leader_random_speed_change, leader_random_speed_change)
 
 
     # Cap maximum speed
     speed = math.sqrt(leaderbirdvx*leaderbirdvx + leaderbirdvy*leaderbirdvy)
-    if (speed > LEADERMAXSPEED):
-        leaderbirdvx = leaderbirdvx * LEADERMAXSPEED/speed
-        leaderbirdvy = leaderbirdvy * LEADERMAXSPEED/speed
+    if (speed > leader_max_speed):
+        leaderbirdvx = leaderbirdvx * leader_max_speed / speed
+        leaderbirdvy = leaderbirdvy * leader_max_speed / speed
 
 
     leaderbirdx += leaderbirdvx
     leaderbirdy += leaderbirdvy
 
-
-    
-
     # Draw birds, positions and speeds
     i = 0
-    while (i < NUMBEROFBIRDS):
+    while (i < no_of_birds):
 
         # Make copies for clarity
         x = birdlist[i][0]
@@ -107,21 +100,21 @@ while not quit_pressed:
         vx = birdlist[i][2]
         vy = birdlist[i][3]
 
-        colr = int(float(i) * 255.0/NUMBEROFBIRDS)
-        colg = int((NUMBEROFBIRDS-float(i)) * 255.0/NUMBEROFBIRDS)
+        colr = int(float(i) * 255.0 / no_of_birds)
+        colg = int((no_of_birds - float(i)) * 255.0 / no_of_birds)
         colb = 255
         
         pygame.draw.circle(screen, (colr,colg,colb), (int(x), int(y)), 2, 0)
 
         # Birds move away from border
-        if (x < BORDER):
-            vx += BORDERSPEEDCHANGE
-        if (y < BORDER):
-            vy += BORDERSPEEDCHANGE
-        if (x > WIDTH - BORDER):
-            vx -= BORDERSPEEDCHANGE
-        if (y > HEIGHT - BORDER):
-            vy -= BORDERSPEEDCHANGE
+        if (x < border):
+            vx += border_speed_change
+        if (y < border):
+            vy += border_speed_change
+        if (x > width - border):
+            vx -= border_speed_change
+        if (y > height - border):
+            vy -= border_speed_change
 
         # Birds move towards leader bird
         leaderdiffx = leaderbirdx - x
@@ -136,15 +129,15 @@ while not quit_pressed:
         avxtotal = 0
         avytotal = 0
         avcount = 0
-        while (j < NUMBEROFBIRDS):
+        while (j < no_of_birds):
             if (j != i):
                 dx = birdlist[j][0] - x
                 dy = birdlist[j][1] - y
                 dist = math.sqrt(dx*dx + dy*dy)
-                if (dist < MINDIST):
+                if (dist < min_dist):
                     vx -= dx * 0.2
                     vy -= dy * 0.2
-                if (dist < MATCHSPEEDWINDOW):
+                if (dist < match_speed_window):
                     avxtotal += birdlist[j][2]
                     avytotal += birdlist[j][3]
                     avcount += 1
@@ -161,7 +154,7 @@ while not quit_pressed:
             dx = barrier[0] - x
             dy = barrier[1] - y
             dist = math.sqrt(dx*dx + dy*dy)
-            if (dist < BARRIERRADIUS + 15):
+            if (dist < barrier_radius + 15):
                 vx -= dx * 0.1
                 vx *= 0.6
                 vy -= dy * 0.1
@@ -169,9 +162,9 @@ while not quit_pressed:
                 
         # Cap maximum speed
         speed = math.sqrt(vx*vx + vy*vy)
-        if (speed > MAXSPEED):
-            vx = vx * MAXSPEED/speed
-            vy = vy * MAXSPEED/speed
+        if (speed > max_speed):
+            vx = vx * max_speed / speed
+            vy = vy * max_speed / speed
 
         # Update positions according to speeds
         birdlist[i][0] += vx
@@ -181,7 +174,7 @@ while not quit_pressed:
         i += 1
 
     for barrier in barriers:
-        pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), BARRIERRADIUS, 0)
+        pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
     #time.sleep(0.1)
     pygame.display.flip()
