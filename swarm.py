@@ -4,8 +4,8 @@ import pygame.locals
 pygame.init()
 
 # set the width and height of the screen
-width = 1000
-height = 1000
+width = 1500
+height = 1500
 
 center_x = width / 2
 center_y = height / 2
@@ -13,8 +13,8 @@ center_y = height / 2
 no_of_birds = 60
 
 position_spread = 10000
-speed_spread = 3
-max_speed = 5
+speed_spread = 2
+max_speed = 4
 
 border = 100
 leader_border = 200
@@ -24,7 +24,7 @@ min_dist = 10.0
 match_speed_window = 40.0
 
 leader_random_speed_change = 0.2
-leader_max_speed = 5.0
+leader_max_speed = 4.0
 
 barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
 barrier_radius = 15
@@ -69,10 +69,13 @@ while not quit_pressed:
 
     if food is None:
         if random.uniform(0,1) < 0.1:
-            fx = random.uniform(0,1000)
-            fy = random.uniform(0,1000)
-            food = [int(fx), int(fy)]
-            pygame.draw.circle(screen, (100, 200, 100), food, 7)
+            collide = [True]
+            while True in collide:
+                fx = random.uniform(0,1000)
+                fy = random.uniform(0,1000)
+                collide = [True for x,y in barriers if math.fabs(x-fx) < 15 and math.fabs(y-fy) < 15]
+                food = [int(fx), int(fy)]
+                pygame.draw.circle(screen, (100, 200, 100), food, 7)
     else:
         pygame.draw.circle(screen, (100, 200, 100), food, 9)
         if min_food_dist < 10.0:
