@@ -37,6 +37,7 @@ pygame.mouse.set_visible(0)
 
 birdlist = []
 food = None
+predator = None
 
 # Generate leader bird
 leaderbirdx = 300.0
@@ -72,9 +73,42 @@ while not quit_pressed:
             food = [int(fx), int(fy)]
             pygame.draw.circle(screen, (100, 200, 100), food, 7)
     else:
-        pygame.draw.circle(screen, (100, 200, 100), food, 7)
+        pygame.draw.circle(screen, (100, 200, 100), food, 9)
         if min_food_dist < 10.0:
             food = None
+
+    if predator is None:
+        if random.uniform(0, 1) < 0.001:
+            px = random.uniform(0, 1000)
+            py = random.uniform(0, 1000)
+            pvx = random.uniform(-speed_spread, speed_spread)
+            pvy = random.uniform(-speed_spread, speed_spread)
+            predator = [px, py, pvx, pvy]
+            pygame.draw.circle(screen, (204, 0, 0), [int(px), int(py)], 7)
+            print("Predator is: ", px, py)
+    else:
+        # Update leader bird position and speed
+        if (predator[0] < leader_border):
+            predator[2] += border_speed_change
+        if (predator[1] < leader_border):
+            predator[3] += border_speed_change
+        if (predator[0] > width - leader_border):
+            predator[2] -= border_speed_change
+        if (predator[1] > height - leader_border):
+            predator[3] -= border_speed_change
+        predator[2] += random.uniform(-leader_random_speed_change, leader_random_speed_change)
+        predator[3] += random.uniform(-leader_random_speed_change, leader_random_speed_change)
+
+        # Cap maximum speed
+        speed = math.sqrt(math.pow(predator[2], 2) + math.pow(predator[3], 2))
+        if (speed > leader_max_speed):
+            predator[2] = leaderbirdvx * leader_max_speed / speed
+            predator[3] = leaderbirdvy * leader_max_speed / speed
+
+        predator[0] += predator[2]
+        predator[1] += predator[3]
+        pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 7)
+
 
     if food_closest is not None:
         leaderbirdx = birdlist[food_closest][0]
