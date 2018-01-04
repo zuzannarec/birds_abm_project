@@ -10,11 +10,11 @@ height = 1000
 center_x = width / 2
 center_y = height / 2
 
-no_of_birds = 200
+no_of_birds = 60
 
 position_spread = 10000
-speed_spread = 5
-max_speed = 10
+speed_spread = 3
+max_speed = 5
 
 border = 100
 leader_border = 200
@@ -27,7 +27,7 @@ leader_random_speed_change = 0.2
 leader_max_speed = 5.0
 
 barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
-barrier_radius = 30
+barrier_radius = 15
 
 size = [width, height]
 screen = pygame.display.set_mode(size)
@@ -36,15 +36,17 @@ screen = pygame.display.set_mode(size)
 pygame.mouse.set_visible(0)
 
 birdlist = []
+food = None
 
 # Generate leader bird
 leaderbirdx = 300.0
 leaderbirdy = 300.0
-leaderbirdvx = 5.0
+leaderbirdvx = 4.0
 leaderbirdvy = 0.0
 
 # Generate birds
 i = 0
+food_closest = None
 while (i < no_of_birds):
     x = random.uniform(center_x - position_spread, center_x + position_spread)
     y = random.uniform(center_y - position_spread, center_y + position_spread)
@@ -61,6 +63,24 @@ quit_pressed = False
 while not quit_pressed:
 
     screen.fill((0,0,0))
+    # Randomly place food on a screen
+
+    if food is None:
+        if random.uniform(0,1) < 0.01:
+            fx = random.uniform(0,1000)
+            fy = random.uniform(0,1000)
+            food = [int(fx), int(fy)]
+            pygame.draw.circle(screen, (100, 200, 100), food, 7)
+    else:
+        pygame.draw.circle(screen, (100, 200, 100), food, 7)
+        if min_food_dist < 10.0:
+            food = None
+
+    if food_closest is not None:
+        leaderbirdx = birdlist[food_closest][0]
+        leaderbirdy = birdlist[food_closest][1]
+        leaderbirdvx = birdlist[food_closest][2]
+        leaderbirdvy = birdlist[food_closest][3]
 
 
     # Update leader bird position and speed
@@ -92,6 +112,7 @@ while not quit_pressed:
 
     # Draw birds, positions and speeds
     i = 0
+    min_food_dist = 2000
     while (i < no_of_birds):
 
         # Make copies for clarity
@@ -121,6 +142,13 @@ while not quit_pressed:
         leaderdiffy = leaderbirdy - y
         vx += 0.007 * leaderdiffx
         vy += 0.007 * leaderdiffy
+
+        # Birds calculate distance to food
+        if food is not None:
+            food_dist = math.sqrt(math.pow(x - food[0], 2) + math.pow(y - food[1], 2))
+            if food_dist < min_food_dist:
+                min_food_dist = food_dist
+                food_closest = i
 
         # Move away from other nearby birds
         # Also calculate average velocity of birds in larger window
