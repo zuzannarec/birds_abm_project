@@ -48,6 +48,7 @@ leaderbirdvy = 0.0
 # Generate birds
 i = 0
 food_closest = None
+predator_farest = None
 while (i < no_of_birds):
     x = random.uniform(center_x - position_spread, center_x + position_spread)
     y = random.uniform(center_y - position_spread, center_y + position_spread)
@@ -67,7 +68,7 @@ while not quit_pressed:
     # Randomly place food on a screen
 
     if food is None:
-        if random.uniform(0,1) < 0.01:
+        if random.uniform(0,1) < 0.1:
             fx = random.uniform(0,1000)
             fy = random.uniform(0,1000)
             food = [int(fx), int(fy)]
@@ -109,8 +110,13 @@ while not quit_pressed:
         predator[1] += predator[3]
         pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 7)
 
+    if predator_farest is not None and predator is not None:
+        leaderbirdx = birdlist[predator_farest][0]
+        leaderbirdy = birdlist[predator_farest][1]
+        leaderbirdvx = birdlist[predator_farest][2]
+        leaderbirdvy = birdlist[predator_farest][3]
 
-    if food_closest is not None:
+    if food_closest is not None and predator is None:
         leaderbirdx = birdlist[food_closest][0]
         leaderbirdy = birdlist[food_closest][1]
         leaderbirdvx = birdlist[food_closest][2]
@@ -147,6 +153,7 @@ while not quit_pressed:
     # Draw birds, positions and speeds
     i = 0
     min_food_dist = 2000
+    max_predator_dist = 0
     while (i < no_of_birds):
 
         # Make copies for clarity
@@ -178,12 +185,18 @@ while not quit_pressed:
         vy += 0.007 * leaderdiffy
 
         # Birds calculate distance to food
-        if food is not None:
+        if food is not None and predator is None:
             food_dist = math.sqrt(math.pow(x - food[0], 2) + math.pow(y - food[1], 2))
             if food_dist < min_food_dist:
                 min_food_dist = food_dist
                 food_closest = i
 
+        # calculate distance from predator
+        if predator is not None:
+            predator_dist = math.sqrt(math.pow(x - predator[0], 2) + math.pow(y - predator[1], 2))
+            if predator_dist > max_predator_dist:
+                max_predator_dist = predator_dist
+                predator_farest = i
         # Move away from other nearby birds
         # Also calculate average velocity of birds in larger window
         j = 0
@@ -241,7 +254,8 @@ while not quit_pressed:
     #time.sleep(0.1)
     pygame.display.flip()
     i += 1
-
+    if predator is not None and random.uniform(0, 1) < 0.002:
+        predator = None
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             quit_pressed = True
