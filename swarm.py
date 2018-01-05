@@ -59,8 +59,31 @@ while (i < no_of_birds):
     birdlist.append(newbird)
     i += 1
 
-quit_pressed = False
 
+
+def calculate_av_speed_of_nearby(vx, vy):
+    j = 0
+    avxtotal = 0
+    avytotal = 0
+    avcount = 0
+    while (j < no_of_birds):
+        if (j != i):
+            dx = birdlist[j][0] - x  # x-distance between current i-th bird and j-th bird
+            dy = birdlist[j][1] - y  # y-distance between current i-th bird and j-th bird
+            dist = math.sqrt(dx * dx + dy * dy)  # euclidean distance
+            # if distance is smaller than minimum distance birds move away from each other
+            if (dist < min_dist):
+                vx -= dx * 0.2
+                vy -= dy * 0.2
+            # sum up velocities of nearby birds and counts them
+            if (dist < match_speed_window):
+                avxtotal += birdlist[j][2]
+                avytotal += birdlist[j][3]
+                avcount += 1
+        j += 1
+    return avxtotal, avytotal, avcount, vx, vy
+
+quit_pressed = False
 while not quit_pressed:
 
     screen.fill((0,0,0))
@@ -182,27 +205,9 @@ while not quit_pressed:
                 max_predator_dist = predator_dist
                 predator_farest = i
 
-        # Calculate average velocity of other birds.
-        j = 0
-        avxtotal = 0
-        avytotal = 0
-        avcount = 0
-        while (j < no_of_birds):
-            if (j != i):
-                dx = birdlist[j][0] - x # x-distance between current i-th bird and j-th bird
-                dy = birdlist[j][1] - y # y-distance between current i-th bird and j-th bird
-                dist = math.sqrt(dx*dx + dy*dy) # euclidean distance
-                # if distance is smaller than minimum distance birds move away from each other
-                if (dist < min_dist):
-                    vx -= dx * 0.2
-                    vy -= dy * 0.2
-                # sum up velocities of nearby birds and counts them
-                if (dist < match_speed_window):
-                    avxtotal += birdlist[j][2]
-                    avytotal += birdlist[j][3]
-                    avcount += 1
-            j += 1
-
+        # Calculate average velocity of other birds
+        # Bird moves away from neighbours that are too close
+        avxtotal, avytotal, avcount, vx, vy = calculate_av_speed_of_nearby(vx, vy)
         # Match to average velocity of nearby birds
         if (avcount != 0):
             avx = avxtotal / avcount
