@@ -175,32 +175,34 @@ while not quit_pressed:
                 min_food_dist = food_dist
                 food_closest = i
 
-        # calculate distance from predator
+        # Birds calculate distance from predator
         if predator is not None:
             predator_dist = math.sqrt(math.pow(x - predator[0], 2) + math.pow(y - predator[1], 2))
             if predator_dist > max_predator_dist:
                 max_predator_dist = predator_dist
                 predator_farest = i
-        # Move away from other nearby birds
-        # Also calculate average velocity of birds in larger window
+
+        # Calculate average velocity of other birds.
         j = 0
-        # For calculating average velocity of other birds
         avxtotal = 0
         avytotal = 0
         avcount = 0
         while (j < no_of_birds):
             if (j != i):
-                dx = birdlist[j][0] - x
-                dy = birdlist[j][1] - y
-                dist = math.sqrt(dx*dx + dy*dy)
+                dx = birdlist[j][0] - x # x-distance between current i-th bird and j-th bird
+                dy = birdlist[j][1] - y # y-distance between current i-th bird and j-th bird
+                dist = math.sqrt(dx*dx + dy*dy) # euclidean distance
+                # if distance is smaller than minimum distance birds move away from each other
                 if (dist < min_dist):
                     vx -= dx * 0.2
                     vy -= dy * 0.2
+                # sum up velocities of nearby birds and counts them
                 if (dist < match_speed_window):
                     avxtotal += birdlist[j][2]
                     avytotal += birdlist[j][3]
                     avcount += 1
             j += 1
+
         # Match to average velocity of nearby birds
         if (avcount != 0):
             avx = avxtotal / avcount
@@ -260,4 +262,3 @@ while not quit_pressed:
                 collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
                 food = [int(fx), int(fy)]
                 pygame.draw.circle(screen, (100, 200, 100), food, 7)
-
