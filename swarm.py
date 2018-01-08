@@ -20,7 +20,7 @@ leader_border = 200
 border_speed_change = 0.2
 
 min_dist = 10.0
-match_speed_window = 40.0
+match_speed_window = 70.0
 
 leader_random_speed_change = 0.2
 leader_max_speed = 4.0
@@ -164,7 +164,7 @@ while not quit_pressed:
 
     # Draw birds, positions and speeds
     i = 0
-    min_food_dist = 2000
+    min_food_dist = 1500
     max_predator_dist = 0
     while (i < no_of_birds):
         # Make copies for clarity
