@@ -173,9 +173,9 @@ while not quit_pressed:
         vx = birdlist[i][2]
         vy = birdlist[i][3]
 
-        colr = int(float(i) * 255.0 / no_of_birds)
-        colg = int((no_of_birds - float(i)) * 255.0 / no_of_birds)
-        colb = 0
+        colr = 223
+        colg = 150
+        colb = 75
         
         pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 3, 0)
 
