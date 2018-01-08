@@ -49,6 +49,9 @@ i = 0
 food_closest = None
 predator_farest = None
 
+bg = pygame.image.load("sky2.jpg")
+bg = pygame.transform.scale(bg, (width, height))
+
 while (i < no_of_birds):
     x = random.uniform(center_x - position_spread, center_x + position_spread)
     y = random.uniform(center_y - position_spread, center_y + position_spread)
@@ -86,9 +89,10 @@ def calculate_av_speed_of_nearby(vx, vy):
 quit_pressed = False
 while not quit_pressed:
 
-    screen.fill((0, 0, 20))
-    # Randomly place food on a screen
+    #.fill((0, 0, 20))
+    screen.blit(bg, (0, 0))
 
+    # Randomly place food on a screen
     if food is not None:
         pygame.draw.circle(screen, (100, 200, 100), food, 9)
         if min_food_dist < 10.0:
@@ -173,9 +177,9 @@ while not quit_pressed:
         vx = birdlist[i][2]
         vy = birdlist[i][3]
 
-        colr = 223
-        colg = 150
-        colb = 75
+        colr = 0
+        colg = 0
+        colb = 0
         
         pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 3, 0)
 
