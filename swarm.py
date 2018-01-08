@@ -266,8 +266,8 @@ while not quit_pressed:
         if event.type == pygame.QUIT:
             quit_pressed = True
         if event.type == pygame.KEYUP and event.key == pygame.K_p:
-            px = random.uniform(0, 1000)
-            py = random.uniform(0, 1000)
+            px = random.uniform(0, 1500)
+            py = random.uniform(0, 1500)
             pvx = random.uniform(-speed_spread, speed_spread)
             pvy = random.uniform(-speed_spread, speed_spread)
             predator = [px, py, pvx, pvy]
@@ -277,8 +277,8 @@ while not quit_pressed:
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
             #collide = [True]
             #while True in collide:
-            fx = random.uniform(0, 1000)
-            fy = random.uniform(0, 1000)
+            fx = random.uniform(0, 1500)
+            fy = random.uniform(0, 1500)
                 # collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
             food = [int(fx), int(fy)]
             pygame.draw.circle(screen, (100, 200, 100), food, 7)
