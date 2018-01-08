@@ -86,7 +86,7 @@ def calculate_av_speed_of_nearby(vx, vy):
 quit_pressed = False
 while not quit_pressed:
 
-    screen.fill((0,0,0))
+    screen.fill((0, 0, 20))
     # Randomly place food on a screen
 
     if food is not None:
@@ -95,7 +95,7 @@ while not quit_pressed:
             food = None
 
     if predator is not None:
-        # Update leader bird position and speed
+        # Update predator position and speed
         if (predator[0] < leader_border):
             predator[2] += border_speed_change
         if (predator[1] < leader_border):
@@ -117,12 +117,17 @@ while not quit_pressed:
         predator[1] += predator[3]
         pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 7)
 
+
+    # Set leader bird to bird that is has biggest distance to predator
     if predator_farest is not None and predator is not None:
         leaderbirdx = birdlist[predator_farest][0]
         leaderbirdy = birdlist[predator_farest][1]
         leaderbirdvx = birdlist[predator_farest][2]
         leaderbirdvy = birdlist[predator_farest][3]
 
+
+    # Set leader bird to bird that is has smallest distance to food
+    # (works when there's no predator, running away from predator has higher priority
     if food_closest is not None and predator is None:
         leaderbirdx = birdlist[food_closest][0]
         leaderbirdy = birdlist[food_closest][1]
@@ -212,8 +217,8 @@ while not quit_pressed:
         if (avcount != 0):
             avx = avxtotal / avcount
             avy = avytotal / avcount
-            vx = 0.9 * vx + 0.1 * avx
-            vy = 0.9 * vy + 0.1 * avy
+            vx = 0.9 * vx + 0.1 * avx # Add x average velocity component to x-velocity
+            vy = 0.9 * vy + 0.1 * avy # Add y average velocity component to y-velocity
 
         # Bounce off obstacles and slow down
         for barrier in barriers:
@@ -222,10 +227,30 @@ while not quit_pressed:
             dist = math.sqrt(dx*dx + dy*dy)
             if (dist < barrier_radius + 15):
                 vx -= dx * 0.1
-                vx *= 0.6
+                vx *= 0.6 # Slow down
                 vy -= dy * 0.1
-                vy *= 0.6
-                
+                vy *= 0.6 # Slow down
+        if x >= 1500:
+            vx -= x * 0.1
+            vx *= 0.6  # Slow down
+            vy -= y * 0.1
+            vy *= 0.6  # Slow down
+        if y >= 1500:
+            vx -= x * 0.1
+            vx *= 0.6  # Slow down
+            vy -= y * 0.1
+            vy *= 0.6  # Slow down
+        if x < 0:
+            vx -= x * 0.1
+            vx *= 0.6  # Slow down
+            vy -= y * 0.1
+            vy *= 0.6  # Slow down
+        if y < 0:
+            vx -= x * 0.1
+            vx *= 0.6  # Slow down
+            vy -= y * 0.1
+            vy *= 0.6  # Slow down
+
         # Cap maximum speed
         speed = math.sqrt(vx*vx + vy*vy)
         if (speed > max_speed):
@@ -240,7 +265,7 @@ while not quit_pressed:
         i += 1
 
     for barrier in barriers:
-        pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
+       pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
     #time.sleep(0.1)
     pygame.display.flip()
