@@ -179,16 +179,6 @@ while not quit_pressed:
         
         pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 3, 0)
 
-        # Birds move away from border
-        if (x < border):
-            vx += border_speed_change
-        if (y < border):
-            vy += border_speed_change
-        if (x > width - border):
-            vx -= border_speed_change
-        if (y > height - border):
-            vy -= border_speed_change
-
         # Birds move towards leader bird
         leaderdiffx = leaderbirdx - x
         leaderdiffy = leaderbirdy - y
