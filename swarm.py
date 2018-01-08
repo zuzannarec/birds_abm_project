@@ -89,12 +89,12 @@ def calculate_av_speed_of_nearby(vx, vy):
 quit_pressed = False
 while not quit_pressed:
 
-    #.fill((0, 0, 20))
+    #screen.fill((0, 0, 255))
     screen.blit(bg, (0, 0))
 
     # Randomly place food on a screen
     if food is not None:
-        pygame.draw.circle(screen, (100, 200, 100), food, 9)
+        pygame.draw.circle(screen, (0, 100, 0), food, 12)
         if min_food_dist < 10.0:
             food = None
 
@@ -119,7 +119,7 @@ while not quit_pressed:
 
         predator[0] += predator[2]
         predator[1] += predator[3]
-        pygame.draw.circle(screen, (255, 0, 0), [int(predator[0]), int(predator[1])], 10)
+        pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 15)
 
 
     # Set leader bird to bird that is has biggest distance to predator
@@ -181,7 +181,7 @@ while not quit_pressed:
         colg = 0
         colb = 0
         
-        pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 3, 0)
+        pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 4, 0)
 
         # Birds move towards leader bird
         leaderdiffx = leaderbirdx - x
