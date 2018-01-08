@@ -126,7 +126,7 @@ while not quit_pressed:
         leaderbirdvy = birdlist[predator_farest][3]
 
 
-    # Set leader bird to bird that is has smallest distance to food
+    # Set leader bird to bird that has smallest distance to food
     # (works when there's no predator, running away from predator has higher priority
     if food_closest is not None and predator is None:
         leaderbirdx = birdlist[food_closest][0]
@@ -221,22 +221,22 @@ while not quit_pressed:
         #         vy *= 0.6 # Slow down
 
         # Birds bound off bounds of screen window
-        if x >= width:
+        if x >= width + 100:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
             vy *= 0.6  # Slow down
-        if y >= height:
+        if y >= height + 100:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
             vy *= 0.6  # Slow down
-        if x < 0:
+        if x < -100:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
             vy *= 0.6  # Slow down
-        if y < 0:
+        if y < -100:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
@@ -272,7 +272,6 @@ while not quit_pressed:
             pvy = random.uniform(-speed_spread, speed_spread)
             predator = [px, py, pvx, pvy]
             pygame.draw.circle(screen, (255, 0, 0), [int(px), int(py)], 10)
-            print("Predator is: ", px, py)
         if event.type == pygame.KEYUP and event.key == pygame.K_k and predator is not None:
             predator = None
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
