@@ -25,8 +25,8 @@ match_speed_window = 40.0
 leader_random_speed_change = 0.2
 leader_max_speed = 4.0
 
-barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
-barrier_radius = 15
+# barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
+# barrier_radius = 15
 
 size = [width, height]
 screen = pygame.display.set_mode(size)
@@ -48,6 +48,7 @@ leaderbirdvy = 0.0
 i = 0
 food_closest = None
 predator_farest = None
+
 while (i < no_of_birds):
     x = random.uniform(center_x - position_spread, center_x + position_spread)
     y = random.uniform(center_y - position_spread, center_y + position_spread)
@@ -58,7 +59,6 @@ while (i < no_of_birds):
 
     birdlist.append(newbird)
     i += 1
-
 
 
 def calculate_av_speed_of_nearby(vx, vy):
@@ -115,7 +115,7 @@ while not quit_pressed:
 
         predator[0] += predator[2]
         predator[1] += predator[3]
-        pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 7)
+        pygame.draw.circle(screen, (255, 0, 0), [int(predator[0]), int(predator[1])], 10)
 
 
     # Set leader bird to bird that is has biggest distance to predator
@@ -167,7 +167,6 @@ while not quit_pressed:
     min_food_dist = 2000
     max_predator_dist = 0
     while (i < no_of_birds):
-
         # Make copies for clarity
         x = birdlist[i][0]
         y = birdlist[i][1]
@@ -176,9 +175,9 @@ while not quit_pressed:
 
         colr = int(float(i) * 255.0 / no_of_birds)
         colg = int((no_of_birds - float(i)) * 255.0 / no_of_birds)
-        colb = 255
+        colb = 0
         
-        pygame.draw.circle(screen, (colr,colg,colb), (int(x), int(y)), 2, 0)
+        pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 3, 0)
 
         # Birds move away from border
         if (x < border):
@@ -221,21 +220,23 @@ while not quit_pressed:
             vy = 0.9 * vy + 0.1 * avy # Add y average velocity component to y-velocity
 
         # Bounce off obstacles and slow down
-        for barrier in barriers:
-            dx = barrier[0] - x
-            dy = barrier[1] - y
-            dist = math.sqrt(dx*dx + dy*dy)
-            if (dist < barrier_radius + 15):
-                vx -= dx * 0.1
-                vx *= 0.6 # Slow down
-                vy -= dy * 0.1
-                vy *= 0.6 # Slow down
-        if x >= 1500:
+        # for barrier in barriers:
+        #     dx = barrier[0] - x
+        #     dy = barrier[1] - y
+        #     dist = math.sqrt(dx*dx + dy*dy)
+        #     if (dist < barrier_radius + 15):
+        #         vx -= dx * 0.1
+        #         vx *= 0.6 # Slow down
+        #         vy -= dy * 0.1
+        #         vy *= 0.6 # Slow down
+
+        # Birds bound off bounds of screen window
+        if x >= width:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
             vy *= 0.6  # Slow down
-        if y >= 1500:
+        if y >= height:
             vx -= x * 0.1
             vx *= 0.6  # Slow down
             vy -= y * 0.1
@@ -264,8 +265,8 @@ while not quit_pressed:
         birdlist[i][3] = vy
         i += 1
 
-    for barrier in barriers:
-       pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
+    # for barrier in barriers:
+    #    pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
     #time.sleep(0.1)
     pygame.display.flip()
@@ -280,15 +281,15 @@ while not quit_pressed:
             pvx = random.uniform(-speed_spread, speed_spread)
             pvy = random.uniform(-speed_spread, speed_spread)
             predator = [px, py, pvx, pvy]
-            pygame.draw.circle(screen, (204, 0, 0), [int(px), int(py)], 7)
+            pygame.draw.circle(screen, (255, 0, 0), [int(px), int(py)], 10)
             print("Predator is: ", px, py)
         if event.type == pygame.KEYUP and event.key == pygame.K_k and predator is not None:
             predator = None
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
-            collide = [True]
-            while True in collide:
-                fx = random.uniform(0, 1000)
-                fy = random.uniform(0, 1000)
-                collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
-                food = [int(fx), int(fy)]
-                pygame.draw.circle(screen, (100, 200, 100), food, 7)
+            #collide = [True]
+            #while True in collide:
+            fx = random.uniform(0, 1000)
+            fy = random.uniform(0, 1000)
+                # collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
+            food = [int(fx), int(fy)]
+            pygame.draw.circle(screen, (100, 200, 100), food, 7)
