@@ -19,7 +19,7 @@ border = 100
 leader_border = 200
 border_speed_change = 0.2
 
-min_dist = 10.0
+min_dist = 15.0
 match_speed_window = 70.0
 
 leader_random_speed_change = 0.2
@@ -57,9 +57,7 @@ while (i < no_of_birds):
     y = random.uniform(center_y - position_spread, center_y + position_spread)
     vx = random.uniform(-speed_spread, speed_spread)
     vy = random.uniform(-speed_spread, speed_spread)
-    
     newbird = [x, y, vx, vy]
-
     birdlist.append(newbird)
     i += 1
 
@@ -76,8 +74,8 @@ def calculate_av_speed_of_nearby(vx, vy):
             dist = math.sqrt(dx * dx + dy * dy)  # euclidean distance
             # if distance is smaller than minimum distance birds move away from each other
             if (dist < min_dist):
-                vx -= dx * 0.2
-                vy -= dy * 0.2
+                vx -= dx * 0.3
+                vy -= dy * 0.3
             # sum up velocities of nearby birds and counts them
             if (dist < match_speed_window):
                 avxtotal += birdlist[j][2]
@@ -87,9 +85,18 @@ def calculate_av_speed_of_nearby(vx, vy):
     return avxtotal, avytotal, avcount, vx, vy
 
 quit_pressed = False
+iterator = 0
 while not quit_pressed:
-
-    #screen.fill((0, 0, 255))
+    # Breed new bird
+    iterator += 1
+    if iterator%500 == 0:
+        xn = leaderbirdx
+        yn = leaderbirdy
+        vxn = random.uniform(-speed_spread, speed_spread)
+        vyn = random.uniform(-speed_spread, speed_spread)
+        newbirdn = [xn, yn, vxn, vyn]
+        birdlist.append(newbirdn)
+    #screen.fill((102, 153, 255))
     screen.blit(bg, (0, 0))
 
     # Randomly place food on a screen
@@ -170,7 +177,7 @@ while not quit_pressed:
     i = 0
     min_food_dist = 1500
     max_predator_dist = 0
-    while (i < no_of_birds):
+    while (i < len(birdlist)):
         # Make copies for clarity
         x = birdlist[i][0]
         y = birdlist[i][1]
