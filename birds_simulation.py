@@ -47,7 +47,7 @@ leaderbirdvy = 0.0
 # Generate birds
 i = 0
 food_closest = None
-predator_farest = None
+predator_farthest = None
 
 bg = pygame.image.load("sky.jpg")
 bg = pygame.transform.scale(bg, (width, height))
@@ -130,11 +130,11 @@ while not quit_pressed:
 
 
     # Set leader bird to bird that is has biggest distance to predator
-    if predator_farest is not None and predator is not None:
-        leaderbirdx = birdlist[predator_farest][0]
-        leaderbirdy = birdlist[predator_farest][1]
-        leaderbirdvx = birdlist[predator_farest][2]
-        leaderbirdvy = birdlist[predator_farest][3]
+    if predator_farthest is not None and predator is not None:
+        leaderbirdx = birdlist[predator_farthest][0]
+        leaderbirdy = birdlist[predator_farthest][1]
+        leaderbirdvx = birdlist[predator_farthest][2]
+        leaderbirdvy = birdlist[predator_farthest][3]
 
 
     # Set leader bird to bird that has smallest distance to food
@@ -158,7 +158,6 @@ while not quit_pressed:
 
 
     # Draw leaderbird and update
-    # pygame.draw.circle(screen, (255,0,255), (int(leaderbirdx), int(leaderbirdy)), 5, 0)
     leaderbirdvx += random.uniform(-leader_random_speed_change, leader_random_speed_change)
     leaderbirdvy += random.uniform(-leader_random_speed_change, leader_random_speed_change)
 
@@ -208,7 +207,7 @@ while not quit_pressed:
             predator_dist = math.sqrt(math.pow(x - predator[0], 2) + math.pow(y - predator[1], 2))
             if predator_dist > max_predator_dist:
                 max_predator_dist = predator_dist
-                predator_farest = i
+                predator_farthest = i
 
         # Calculate average velocity of other birds
         # Bird moves away from neighbours that are too close
