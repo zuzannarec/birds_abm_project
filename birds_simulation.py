@@ -10,7 +10,7 @@ height = 1500
 center_x = width / 2
 center_y = height / 2
 
-no_of_birds = 60
+no_of_birds = 120
 position_spread = 800
 speed_spread = 2
 max_speed = 4
@@ -25,8 +25,8 @@ match_speed_window = 70.0
 leader_random_speed_change = 0.2
 leader_max_speed = 4.0
 
-# barriers = [[450,500],[475,500],[500,500],[525,500],[625,500],[650,500],[675,500],[700,500],[400,500],[425,500],[400,525],[400,550],[400,650],[400,675],[400,700],[375,700],[350,700],[325,700],[300,700],[275,700],[250,700],[800,200],[250,700],[100,100]]
-# barrier_radius = 15
+barriers = [[500, 120], [500, 140], [500, 160], [500, 180], [500, 200], [500, 220], [600, 320], [600, 340], [600, 360], [600, 380], [600, 400], [600, 420], [800, 620], [800, 640], [800, 660], [800, 680], [800, 600], [800, 620]]
+barrier_radius = 15
 
 size = [width, height]
 screen = pygame.display.set_mode(size)
@@ -220,15 +220,15 @@ while not quit_pressed:
             vy = 0.9 * vy + 0.1 * avy # Add y average velocity component to y-velocity
 
         # Bounce off obstacles and slow down
-        # for barrier in barriers:
-        #     dx = barrier[0] - x
-        #     dy = barrier[1] - y
-        #     dist = math.sqrt(dx*dx + dy*dy)
-        #     if (dist < barrier_radius + 15):
-        #         vx -= dx * 0.1
-        #         vx *= 0.6 # Slow down
-        #         vy -= dy * 0.1
-        #         vy *= 0.6 # Slow down
+        for barrier in barriers:
+            dx = barrier[0] - x
+            dy = barrier[1] - y
+            dist = math.sqrt(dx*dx + dy*dy)
+            if (dist < barrier_radius + 15):
+                vx -= dx * 0.1
+                vx *= 0.6 # Slow down
+                vy -= dy * 0.1
+                vy *= 0.6 # Slow down
 
         # Birds bound off bounds of screen window
         if x >= width + 100:
@@ -265,8 +265,8 @@ while not quit_pressed:
         birdlist[i][3] = vy
         i += 1
 
-    # for barrier in barriers:
-    #    pygame.draw.circle(screen, (0,100,255), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
+    for barrier in barriers:
+        pygame.draw.circle(screen, (150,100,0), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
     #time.sleep(0.1)
     pygame.display.flip()
@@ -285,10 +285,10 @@ while not quit_pressed:
         if event.type == pygame.KEYUP and event.key == pygame.K_k and predator is not None:
             predator = None
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
-            #collide = [True]
-            #while True in collide:
-            fx = random.uniform(0, 1500)
-            fy = random.uniform(0, 1500)
-                # collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
-            food = [int(fx), int(fy)]
-            pygame.draw.circle(screen, (100, 200, 100), food, 7)
+            collide = [True]
+            while True in collide:
+                fx = random.uniform(0, 1500)
+                fy = random.uniform(0, 1500)
+                collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
+                food = [int(fx), int(fy)]
+                pygame.draw.circle(screen, (100, 200, 100), food, 7)
