@@ -268,7 +268,7 @@ while not quit_pressed:
     for barrier in barriers:
         pygame.draw.circle(screen, (150,100,0), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
-    #time.sleep(0.1)
+    # time.sleep(0.1)
     pygame.display.flip()
     i += 1
 
