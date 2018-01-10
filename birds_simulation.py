@@ -3,12 +3,18 @@ import pygame.locals
 
 pygame.init()
 
-# set the width and height of the screen
 width = 1500
 height = 1500
+size = [width, height]
+screen = pygame.display.set_mode(size)
+# Make the mouse pointer invisible one the screen
+pygame.mouse.set_visible(0)
 
 center_x = width / 2
 center_y = height / 2
+
+barriers = [[500, 120], [500, 140], [500, 160], [500, 180], [500, 200], [500, 220], [600, 320], [600, 340], [600, 360], [600, 380], [600, 400], [600, 420], [800, 620], [800, 640], [800, 660], [800, 680], [800, 600], [800, 620]]
+barrier_radius = 15
 
 no_of_birds = 120
 position_spread = 800
@@ -24,15 +30,6 @@ match_speed_window = 70.0
 
 leader_random_speed_change = 0.2
 leader_max_speed = 4.0
-
-barriers = [[500, 120], [500, 140], [500, 160], [500, 180], [500, 200], [500, 220], [600, 320], [600, 340], [600, 360], [600, 380], [600, 400], [600, 420], [800, 620], [800, 640], [800, 660], [800, 680], [800, 600], [800, 620]]
-barrier_radius = 15
-
-size = [width, height]
-screen = pygame.display.set_mode(size)
-
-# This makes the normal mouse pointer invisible in graphics window
-pygame.mouse.set_visible(0)
 
 birdlist = []
 food = None
@@ -57,8 +54,8 @@ while (i < no_of_birds):
     y = random.uniform(center_y - position_spread, center_y + position_spread)
     vx = random.uniform(-speed_spread, speed_spread)
     vy = random.uniform(-speed_spread, speed_spread)
-    newbird = [x, y, vx, vy]
-    birdlist.append(newbird)
+    added_bird = [x, y, vx, vy]
+    birdlist.append(added_bird)
     i += 1
 
 
@@ -87,24 +84,36 @@ def calculate_av_speed_of_nearby(vx, vy):
 quit_pressed = False
 iterator = 0
 while not quit_pressed:
-    # Breed new bird
-    iterator += 1
-    if iterator%500 == 0:
-        xn = leaderbirdx
-        yn = leaderbirdy
-        vxn = random.uniform(-speed_spread, speed_spread)
-        vyn = random.uniform(-speed_spread, speed_spread)
-        newbirdn = [xn, yn, vxn, vyn]
-        birdlist.append(newbirdn)
-    #screen.fill((102, 153, 255))
+    # Set screen background
+    # screen.fill((102, 153, 255))
     screen.blit(bg, (0, 0))
+    iterator += 1
 
-    # Randomly place food on a screen
+# -------------------------------------------------------------------------------------------
+# Birds reproduction section
+# -------------------------------------------------------------------------------------------
+    # Breed new bird
+    if iterator%500 == 0:
+        x_new_bird = leaderbirdx
+        y_new_bird = leaderbirdy
+        vx_new_bird = random.uniform(-speed_spread, speed_spread)
+        vy_new_bird = random.uniform(-speed_spread, speed_spread)
+        newbirdn = [x_new_bird, y_new_bird, vx_new_bird, vy_new_bird]
+        birdlist.append(newbirdn)
+
+# -------------------------------------------------------------------------------------------
+# Food section
+# -------------------------------------------------------------------------------------------
+    # Randomly place food on the screen
     if food is not None:
         pygame.draw.circle(screen, (0, 100, 0), food, 12)
         if min_food_dist < 10.0:
             food = None
 
+# -------------------------------------------------------------------------------------------
+# Predator section
+# -------------------------------------------------------------------------------------------
+    # Randomly place predator on the screen and manage its velocity
     if predator is not None:
         # Update predator position and speed
         if (predator[0] < leader_border):
@@ -117,34 +126,33 @@ while not quit_pressed:
             predator[3] -= border_speed_change
         predator[2] += random.uniform(-leader_random_speed_change, leader_random_speed_change)
         predator[3] += random.uniform(-leader_random_speed_change, leader_random_speed_change)
-
-        # Cap maximum speed
+        # Cap maximum speed of predator
         speed = math.sqrt(math.pow(predator[2], 2) + math.pow(predator[3], 2))
         if (speed > leader_max_speed):
             predator[2] = leaderbirdvx * leader_max_speed / speed
             predator[3] = leaderbirdvy * leader_max_speed / speed
-
         predator[0] += predator[2]
         predator[1] += predator[3]
+        # Draw predator
         pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 15)
 
-
-    # Set leader bird to bird that is has biggest distance to predator
+# -------------------------------------------------------------------------------------------
+# Birds section
+# -------------------------------------------------------------------------------------------
+    # Set leader bird to bird that has biggest distance to predator
     if predator_farthest is not None and predator is not None:
         leaderbirdx = birdlist[predator_farthest][0]
         leaderbirdy = birdlist[predator_farthest][1]
         leaderbirdvx = birdlist[predator_farthest][2]
         leaderbirdvy = birdlist[predator_farthest][3]
 
-
     # Set leader bird to bird that has smallest distance to food
-    # (works when there's no predator, running away from predator has higher priority
+    # (it counts when there's no predator, running away from predator has higher priority
     if food_closest is not None and predator is None:
         leaderbirdx = birdlist[food_closest][0]
         leaderbirdy = birdlist[food_closest][1]
         leaderbirdvx = birdlist[food_closest][2]
         leaderbirdvy = birdlist[food_closest][3]
-
 
     # Update leader bird position and speed
     if (leaderbirdx < leader_border):
@@ -156,19 +164,14 @@ while not quit_pressed:
     if (leaderbirdy > height - leader_border):
         leaderbirdvy -= border_speed_change
 
-
     # Draw leaderbird and update
     leaderbirdvx += random.uniform(-leader_random_speed_change, leader_random_speed_change)
     leaderbirdvy += random.uniform(-leader_random_speed_change, leader_random_speed_change)
-
-
-    # Cap maximum speed
+    # Cap maximum speed of leader bird
     speed = math.sqrt(leaderbirdvx*leaderbirdvx + leaderbirdvy*leaderbirdvy)
     if (speed > leader_max_speed):
         leaderbirdvx = leaderbirdvx * leader_max_speed / speed
         leaderbirdvy = leaderbirdvy * leader_max_speed / speed
-
-
     leaderbirdx += leaderbirdvx
     leaderbirdy += leaderbirdvy
 
@@ -182,11 +185,11 @@ while not quit_pressed:
         y = birdlist[i][1]
         vx = birdlist[i][2]
         vy = birdlist[i][3]
-
+        # Set colors of birds
         colr = 0
         colg = 0
         colb = 0
-        
+        # Draw birds
         pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 4, 0)
 
         # Birds move towards leader bird
@@ -219,7 +222,7 @@ while not quit_pressed:
             vx = 0.9 * vx + 0.1 * avx # Add x average velocity component to x-velocity
             vy = 0.9 * vy + 0.1 * avy # Add y average velocity component to y-velocity
 
-        # Bounce off obstacles and slow down
+        # Birds bounce off obstacles and slow down
         for barrier in barriers:
             dx = barrier[0] - x
             dy = barrier[1] - y
@@ -265,10 +268,12 @@ while not quit_pressed:
         birdlist[i][3] = vy
         i += 1
 
+# -------------------------------------------------------------------------------------------
+# App functionalities
+# -------------------------------------------------------------------------------------------
     for barrier in barriers:
         pygame.draw.circle(screen, (150,100,0), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
 
-    # time.sleep(0.1)
     pygame.display.flip()
     i += 1
 
