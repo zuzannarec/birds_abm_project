@@ -5,13 +5,11 @@ import numpy as np
 pygame.init()
 
 width = 1500
-height = 1500
+height = 1000
 size = [width, height]
 screen = pygame.display.set_mode(size)
 # Make the mouse pointer invisible one the screen
 pygame.mouse.set_visible(0)
-bg = pygame.image.load("sky.jpg")
-bg = pygame.transform.scale(bg, (width, height))
 
 center_x = width / 2
 center_y = height / 2
@@ -87,7 +85,6 @@ iterator = 0
 while not quit_pressed:
     # Set screen background
     screen.fill((102, 153, 255))
-    #screen.blit(bg, (0, 0))
     iterator += 1
 
 # -------------------------------------------------------------------------------------------
@@ -191,7 +188,7 @@ while not quit_pressed:
         colg = 0.0
         colb = 0.0
         # Draw birds
-        pygame.draw.circle(screen, (colr, colg, colb), (np.int64(x), np.int64(y)), 4)
+        pygame.draw.circle(screen, (colr, colg, colb), (np.int64(x), np.int64(y)), 4, 0)
 
         # Birds move towards leader bird
         leaderdiffx = leaderbirdx - x
@@ -259,9 +256,9 @@ while not quit_pressed:
                 # if distance is smaller than minimum distance birds move away from each other
                 if (dist2_1 < min_dist_between_species):
                     vx -= dx * 0.8
-                    vx *= 50.0
+                    vx *= 10.0
                     vy -= dy * 0.8
-                    vy *= 50.0
+                    vy *= 10.0
 
         # Birds bound off bounds of screen window
         if x >= width + 100:
@@ -287,7 +284,7 @@ while not quit_pressed:
 
         # Cap maximum speed
         speed = math.sqrt(vx*vx + vy*vy)
-        if (speed > max_speed) and not (dist2_1 < min_dist_between_species):
+        if (speed > max_speed):
             vx = vx * max_speed / speed
             vy = vy * max_speed / speed
 
@@ -442,8 +439,8 @@ while not quit_pressed:
         if event.type == pygame.QUIT:
             quit_pressed = True
         if event.type == pygame.KEYUP and event.key == pygame.K_p:
-            px = random.uniform(0, 1500)
-            py = random.uniform(0, 1500)
+            px = random.uniform(0, width)
+            py = random.uniform(0, height)
             pvx = random.uniform(-speed_spread, speed_spread)
             pvy = random.uniform(-speed_spread, speed_spread)
             predator = [px, py, pvx, pvy]
@@ -453,8 +450,8 @@ while not quit_pressed:
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
             collide = [True]
             while True in collide:
-                fx = random.uniform(0, 1500)
-                fy = random.uniform(0, 1500)
+                fx = random.uniform(0, width)
+                fy = random.uniform(0, height)
                 collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
                 food = [np.int64(fx), np.int64(fy)]
                 pygame.draw.circle(screen, (100, 200, 100), food, 7)
