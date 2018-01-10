@@ -84,7 +84,7 @@ quit_pressed = False
 iterator = 0
 while not quit_pressed:
     # Set screen background
-    screen.fill((102, 153, 255))
+    screen.fill((97, 119, 171))
     iterator += 1
 
 # -------------------------------------------------------------------------------------------
