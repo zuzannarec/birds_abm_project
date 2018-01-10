@@ -21,7 +21,6 @@ barrier_radius = 15
 
 no_of_birds = 60
 no_of_birds2 = 20
-position_spread = 800
 speed_spread = 2
 max_speed = 6
 max_speed2 = 10
@@ -35,9 +34,9 @@ border_speed_change2 = 0.2
 
 min_dist_between_species = 30.0
 min_dist = 15.0
-match_speed_window = 70.0
+neighbourhood_area = 70.0
 min_dist2 = 15.0
-match_speed_window2 = 70.0
+naighbourhood_area2 = 70.0
 
 leader_random_speed_change = 0.2
 leader_max_speed = 6.0
@@ -229,7 +228,7 @@ while not quit_pressed:
                     vx -= dx * 0.3
                     vy -= dy * 0.3
                 # sum up velocities of nearby birds and counts them
-                if (dist < match_speed_window):
+                if (dist < neighbourhood_area):
                     avxtotal += birdlist[j][2]
                     avytotal += birdlist[j][3]
                     avcount += 1
@@ -372,7 +371,7 @@ while not quit_pressed:
                     vx2 -= dx2 * 0.3
                     vy2 -= dy2 * 0.3
                 # sum up velocities of nearby birds and counts them
-                if (dist2 < match_speed_window2):
+                if (dist2 < naighbourhood_area2):
                     avxtotal2 += birdlist2[j][2]
                     avytotal2 += birdlist2[j][3]
                     avcount2 += 1
