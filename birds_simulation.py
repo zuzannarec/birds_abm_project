@@ -1,5 +1,6 @@
 import math, random
 import pygame.locals
+import numpy as np
 
 pygame.init()
 
@@ -22,25 +23,25 @@ no_of_birds = 60
 no_of_birds2 = 20
 position_spread = 800
 speed_spread = 2
-max_speed = 4
+max_speed = 6
 max_speed2 = 10
 
 border = 100
 leader_border = 200
 border_speed_change = 0.2
-border2 = 200
-leader_border2 = 400
-border_speed_change2 = 0.4
+border2 = 100
+leader_border2 = 200
+border_speed_change2 = 0.2
 
 min_dist_between_species = 30.0
 min_dist = 15.0
 match_speed_window = 70.0
-min_dist2 = 20.0
+min_dist2 = 15.0
 match_speed_window2 = 70.0
 
 leader_random_speed_change = 0.2
-leader_max_speed = 4.0
-leader_random_speed_change2 = 0.4
+leader_max_speed = 6.0
+leader_random_speed_change2 = 0.2
 leader_max_speed2 = 10.0
 
 birdlist = []
@@ -135,7 +136,7 @@ while not quit_pressed:
         predator[0] += predator[2]
         predator[1] += predator[3]
         # Draw predator
-        pygame.draw.circle(screen, (204, 0, 0), [int(predator[0]), int(predator[1])], 15)
+        pygame.draw.circle(screen, (204, 0, 0), [np.int64(predator[0]), np.int64(predator[1])], 15)
 
 # -------------------------------------------------------------------------------------------
 # Birds section
@@ -187,11 +188,11 @@ while not quit_pressed:
         vx = birdlist[i][2]
         vy = birdlist[i][3]
         # Set colors of birds
-        colr = 0
-        colg = 0
-        colb = 0
+        colr = 0.0
+        colg = 0.0
+        colb = 0.0
         # Draw birds
-        pygame.draw.circle(screen, (colr, colg, colb), (int(x), int(y)), 4, 0)
+        pygame.draw.circle(screen, (colr, colg, colb), (np.int64(x), np.int64(y)), 4)
 
         # Birds move towards leader bird
         leaderdiffx = leaderbirdx - x
@@ -259,9 +260,9 @@ while not quit_pressed:
                 # if distance is smaller than minimum distance birds move away from each other
                 if (dist2_1 < min_dist_between_species):
                     vx -= dx * 0.8
-                    vx *= 40.0
+                    vx *= 50.0
                     vy -= dy * 0.8
-                    vy *= 40.0
+                    vy *= 50.0
 
         # Birds bound off bounds of screen window
         if x >= width + 100:
@@ -287,7 +288,7 @@ while not quit_pressed:
 
         # Cap maximum speed
         speed = math.sqrt(vx*vx + vy*vy)
-        if (speed > max_speed):
+        if (speed > max_speed) and not (dist2_1 < min_dist_between_species):
             vx = vx * max_speed / speed
             vy = vy * max_speed / speed
 
@@ -341,7 +342,7 @@ while not quit_pressed:
         colg2 = 255
         colb2 = 255
         # Draw birds
-        pygame.draw.circle(screen, (colr2, colg2, colb2), (int(x2), int(y2)), 6, 0)
+        pygame.draw.circle(screen, (colr2, colg2, colb2), (np.int64(x2), np.int64(y2)), 6, 0)
 
         # Birds move towards leader bird
         leaderdiffx2 = leaderbirdx2 - x2
@@ -433,7 +434,7 @@ while not quit_pressed:
 # App functionalities
 # -------------------------------------------------------------------------------------------
     for barrier in barriers:
-        pygame.draw.circle(screen, (150,100,0), (int(barrier[0]), int(barrier[1])), barrier_radius, 0)
+        pygame.draw.circle(screen, (150,100,0), (np.int64(barrier[0]), np.int64(barrier[1])), barrier_radius, 0)
 
     pygame.display.flip()
     i += 1
@@ -447,7 +448,7 @@ while not quit_pressed:
             pvx = random.uniform(-speed_spread, speed_spread)
             pvy = random.uniform(-speed_spread, speed_spread)
             predator = [px, py, pvx, pvy]
-            pygame.draw.circle(screen, (255, 0, 0), [int(px), int(py)], 10)
+            pygame.draw.circle(screen, (255, 0, 0), [np.int64(px), np.int64(py)], 10)
         if event.type == pygame.KEYUP and event.key == pygame.K_k and predator is not None:
             predator = None
         if event.type == pygame.KEYUP and event.key == pygame.K_f:
@@ -456,5 +457,5 @@ while not quit_pressed:
                 fx = random.uniform(0, 1500)
                 fy = random.uniform(0, 1500)
                 collide = [True for x, y in barriers if math.fabs(x - fx) < 15 and math.fabs(y - fy) < 15]
-                food = [int(fx), int(fy)]
+                food = [np.int64(fx), np.int64(fy)]
                 pygame.draw.circle(screen, (100, 200, 100), food, 7)
