@@ -90,7 +90,7 @@ while not quit_pressed:
 # -------------------------------------------------------------------------------------------
 # Birds reproduction section
 # -------------------------------------------------------------------------------------------
-    # Breed new bird
+    # Breed new bird of birds type1
     if iterator%500 == 0:
         x_new_bird = leaderbirdx
         y_new_bird = leaderbirdy
